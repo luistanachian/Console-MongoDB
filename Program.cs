@@ -1,5 +1,4 @@
-﻿using Console_MongoDB.Models;
-using MongoDB.Driver;
+﻿using MongoDB.Driver;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -14,7 +13,7 @@ namespace Console_MongoDB
 
             var client = new MongoClient("mongodb://localhost:27017");
             var testDB = client.GetDatabase("testDB");
-            var employeesDB = testDB.GetCollection<Employees>("Employees");
+            var employeesDB = testDB.GetCollection<EmployeeModel>("Employees");
 
             var starDate = DateTime.Now;
             var deleteResult = employeesDB.DeleteMany(e => true);
@@ -22,10 +21,10 @@ namespace Console_MongoDB
             Console.WriteLine($"Console-MongoDB - DeleteMany {deleteResult.DeletedCount} rows {(DateTime.Now - starDate).TotalSeconds}");
 
             starDate = DateTime.Now;
-            var listEmployees = new List<Employees>();
+            var listEmployees = new List<EmployeeModel>();
             for (int i = 0; i < 1000000; i++)
             {
-                var employee = new Employees
+                var employee = new EmployeeModel
                 {
                     Name = RandomText.RandomName(),
                     Age = new Random().Next(18, 60),

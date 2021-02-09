@@ -5,9 +5,9 @@ using MongoDB;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 
-namespace Console_MongoDB.Models
+namespace Console_MongoDB
 {
-    public class Employees
+    public class EmployeeModel
     {
         [BsonId]
         [BsonRepresentation(BsonType.ObjectId)]
