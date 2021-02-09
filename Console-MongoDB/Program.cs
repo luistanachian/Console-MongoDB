@@ -1,6 +1,8 @@
 ﻿using Console_MongoDB.Models;
 using MongoDB.Driver;
 using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Console_MongoDB
 {
@@ -14,9 +16,33 @@ namespace Console_MongoDB
             var testDB = client.GetDatabase("testDB");
             var employeesDB = testDB.GetCollection<Employees>("Employees");
 
-            var employee = new Employees { Name = "Luis", Age = 31 };
+            var starDate = DateTime.Now;
+            var deleteResult = employeesDB.DeleteMany(e => true);
+            
+            Console.WriteLine($"Console-MongoDB - DeleteMany {deleteResult.DeletedCount} rows {(DateTime.Now - starDate).TotalSeconds}");
 
-            employeesDB.InsertOne(employee);
+            starDate = DateTime.Now;
+            var listEmployees = new List<Employees>();
+            for (int i = 0; i < 1000000; i++)
+            {
+                var employee = new Employees
+                {
+                    Name = RandomText.RandomName(),
+                    Age = new Random().Next(18, 60),
+                    Sex = RandomText.RandomSex()
+                };
+                listEmployees.Add(employee);
+            }
+            Console.WriteLine($"Console-MongoDB - Create List {listEmployees.Count} rows {(DateTime.Now - starDate).TotalSeconds}");
+
+            starDate = DateTime.Now;
+            employeesDB.InsertMany(listEmployees);
+            Console.WriteLine($"Console-MongoDB - InsertMany {listEmployees.Count} rows {(DateTime.Now - starDate).TotalSeconds}");
+
+            starDate = DateTime.Now;
+            listEmployees = employeesDB.Find(e => e.Age >= 45).ToList();
+            Console.WriteLine($"Console-MongoDB - Read {listEmployees.Count} rows {(DateTime.Now - starDate).TotalSeconds}");
+            Console.WriteLine();
         }
     }
 }

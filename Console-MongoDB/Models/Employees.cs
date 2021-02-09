@@ -16,6 +16,8 @@ namespace Console_MongoDB.Models
         public string Name { get; set; }
         [BsonElement("age")]
         public int Age { get; set; }
+        [BsonElement("sex")]
+        public string Sex { get; set; }
 
     }
 }
