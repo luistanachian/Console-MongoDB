@@ -7,20 +7,12 @@ namespace Console_MongoDB
 {
     public static class RandomText
     {
-        public static string RandomName()
-        {
-            var array = new string[] { "Kim", "Ivo", "Kendra", "Aron" };
-            return RandomString(array);
-        }
-        public static string RandomSex()
-        {
-            var array = new string[] { "Male", "Female", "Other" };
-            return RandomString(array);
-        }
+        private static readonly string[] _nameArray = new string[] { "Eva", "Ivo", "Kim", "John" };
+        private static readonly string[] _lastNameArray = new string[] { "White", "Carrey", "Smith", "Wick" };
+        private static readonly Func<string[], string> RandomString = (array) => array[new Random().Next(0, array.Count())];
 
-        private static string RandomString(string[] array)
-        {
-            return array[new Random().Next(0, array.Count())];
-        }
+        public static Func<string> Name = () => RandomString(_nameArray);
+        public static Func<string> LastName = () => RandomString(_lastNameArray);
+
     }
 }

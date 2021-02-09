@@ -11,36 +11,50 @@ namespace Console_MongoDB
         {
             Console.WriteLine("Console-MongoDB");
 
+            //create instance of db
             var client = new MongoClient("mongodb://localhost:27017");
             var testDB = client.GetDatabase("testDB");
             var employeesDB = testDB.GetCollection<EmployeeModel>("Employees");
 
-            var starDate = DateTime.Now;
+            //delete many items
             var deleteResult = employeesDB.DeleteMany(e => true);
-            
-            Console.WriteLine($"Console-MongoDB - DeleteMany {deleteResult.DeletedCount} rows {(DateTime.Now - starDate).TotalSeconds}");
+            Console.WriteLine($"Console-MongoDB - DeleteMany {deleteResult.DeletedCount} rows");
 
-            starDate = DateTime.Now;
+            //create list object
             var listEmployees = new List<EmployeeModel>();
-            for (int i = 0; i < 1000000; i++)
+            for (int i = 0; i < 200; i++)
             {
                 var employee = new EmployeeModel
                 {
-                    Name = RandomText.RandomName(),
-                    Age = new Random().Next(18, 60),
-                    Sex = RandomText.RandomSex()
+                    Name = RandomText.Name(),
+                    LastName = RandomText.LastName(),
+                    Age = new Random().Next(18, 100),
+                    Status = "Working"
                 };
                 listEmployees.Add(employee);
             }
-            Console.WriteLine($"Console-MongoDB - Create List {listEmployees.Count} rows {(DateTime.Now - starDate).TotalSeconds}");
+            Console.WriteLine($"Console-MongoDB - Create List {listEmployees.Count} rows");
 
-            starDate = DateTime.Now;
+            //insert many from list object
             employeesDB.InsertMany(listEmployees);
-            Console.WriteLine($"Console-MongoDB - InsertMany {listEmployees.Count} rows {(DateTime.Now - starDate).TotalSeconds}");
+            Console.WriteLine($"Console-MongoDB - InsertMany {listEmployees.Count} rows");
 
-            starDate = DateTime.Now;
-            listEmployees = employeesDB.Find(e => e.Age >= 45).ToList();
-            Console.WriteLine($"Console-MongoDB - Read {listEmployees.Count} rows {(DateTime.Now - starDate).TotalSeconds}");
+            //read items from the DB
+            listEmployees = employeesDB.Find(e => e.Age >= 60).ToList();
+            Console.WriteLine($"Console-MongoDB - Read Age >= 60: {listEmployees.Count} rows");
+
+            //update list
+            foreach (var employee in listEmployees)
+            {
+                employee.Status = "Retired";
+                employeesDB.ReplaceOne(e => e.Id == employee.Id, employee);
+            }
+            Console.WriteLine($"Console-MongoDB - Update Status == 'Retired': {listEmployees.Count} rows");
+
+            //read items from the DB
+            listEmployees = employeesDB.Find(e => e.Status == "Retired").ToList();
+            Console.WriteLine($"Console-MongoDB - Read Status == 'Retired': {listEmployees.Count} rows");
+
             Console.WriteLine();
         }
     }

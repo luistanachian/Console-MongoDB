@@ -14,10 +14,12 @@ namespace Console_MongoDB
         public string Id { get; set; }
         [BsonElement("name")]
         public string Name { get; set; }
+        [BsonElement("lstaname")]
+        public string LastName { get; set; }
         [BsonElement("age")]
         public int Age { get; set; }
-        [BsonElement("sex")]
-        public string Sex { get; set; }
+        [BsonElement("status")]
+        public string Status { get; set; }
 
     }
 }
